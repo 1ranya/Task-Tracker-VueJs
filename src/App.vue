@@ -1,7 +1,11 @@
 <template>
   <div class="container">
     <Header title="Task Tracker"/>
-    <Tasks :tasks="tasks"/>
+    <AddTask $emit="addTask"/>
+    <Tasks 
+      @toggle-reminder="toggleReminder" 
+      @delete-task="deleteTask" 
+      :tasks="tasks"/>
   </div>
 </template>
 
@@ -9,18 +13,41 @@
 import { defineComponent } from "vue";
 import Header from './components/Header';
 import Tasks from './components/Tasks';
+import AddTask from './components/AddTask'
 
 export default defineComponent({
   name: "App",
   components: {
     Header, 
-    Tasks
+    Tasks, 
+    AddTask
   },
   data(){
     return{
       tasks: []
     }
   }, 
+  methods:{
+    deleteTask(id){
+      if(confirm('Delete this Task! Are you sure?')){
+        this.tasks = this.tasks.filter((task) =>
+          task.id !== id )
+      }
+    },
+
+    toggleReminder(id){
+      console.log(id)
+      this.tasks = this.tasks.map((task) => 
+        task.id === id 
+        ? {...task, reminder: !task.reminder}
+        : task
+      )
+    }, 
+
+    addTask(){
+      
+    }
+  },
   created(){ //life cycle hook 
     this.tasks = [
       {
@@ -50,7 +77,7 @@ export default defineComponent({
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

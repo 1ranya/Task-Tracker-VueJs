@@ -1,7 +1,9 @@
 <template>
   <div class="container">
-    <Header title="Task Tracker"/>
-    <AddTask $emit="addTask"/>
+    <Header :showAddTaskVar="showAddTaskVar" @show-add-task="showAddTask" title="Task Tracker"/>
+    <div v-show="showAddTaskVar">
+      <AddTask @add-task="addTask"/>
+    </div>
     <Tasks 
       @toggle-reminder="toggleReminder" 
       @delete-task="deleteTask" 
@@ -24,7 +26,8 @@ export default defineComponent({
   },
   data(){
     return{
-      tasks: []
+      tasks: [], 
+      showAddTaskVar: false 
     }
   }, 
   methods:{
@@ -44,8 +47,12 @@ export default defineComponent({
       )
     }, 
 
-    addTask(){
-      
+    addTask(task){
+      this.tasks = [...this.tasks, task];
+    },
+
+    showAddTask(){
+      this.showAddTaskVar = !this.showAddTaskVar
     }
   },
   created(){ //life cycle hook 
@@ -91,5 +98,10 @@ export default defineComponent({
   width: 10rem;
   height: 2rem;
   border-style: none
+}
+.container{
+  width: 50%;
+  height: 50%;
+  padding-left: 25%
 }
 </style>

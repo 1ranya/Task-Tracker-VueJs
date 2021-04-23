@@ -1,9 +1,11 @@
 <template>
     <div class="header">
         <h1>{{ title }}</h1>
-        <Button text="Add" color="blue"/>
-        <Button text="Remove" color="red"/>
-        <Button text="Update" color="green"/>
+        <Button @btn-click="$emit('show-add-task')" 
+                :text="showAddTaskVar ? 'Close' : 'Add Task'" 
+                :color="showAddTaskVar ? 'red' : 'blue'"/>
+        <!-- <Button text="Remove" color="red"/>
+        <Button text="Update" color="green"/> -->   
     </div>
 </template>
 
@@ -12,11 +14,13 @@ import Button from './Button'
 export default {
     name: 'Header', 
     props:{
-        title:String
+        title:String, 
+        showAddTaskVar:Boolean,
     },
     components:{
         Button
-    }
+    }, 
+    emits:['show-add-task']
 }
 </script>
 

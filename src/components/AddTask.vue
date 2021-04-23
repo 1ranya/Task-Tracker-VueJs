@@ -1,16 +1,16 @@
 <template>
-    <form action="" class="add-form">
+    <form @submit="onSubmit" class="add-form">
         <div class="form-control">
             <label for="">Task</label>
-            <input type="text" name="text" id="" placeholder="Add Task"/>
+            <input v-model="text" type="text" name="text" id="" placeholder="Add Task"/>
         </div>
         <div class="form-control">
             <label for="">Day and Time</label>
-            <input type="text" name="day" id="" placeholder="Add Day and Time"/>
+            <input v-model="day" type="text" name="day" id="" placeholder="Add Day and Time"/>
         </div>  
         <div class="form-control form-control-check">
             <label for="">Set Reminder</label>
-            <input type="checkbox" name="remminder" id=""/>
+            <input v-model="reminder" type="checkbox" name="remminder" id=""/>
         </div>  
         <input type="submit" value="Save Task" class="btn btn-block">
     </form>
@@ -40,10 +40,11 @@ export default {
                 day: this.day, 
                 reminder: this.reminder
             }
+            this.$emit('add-Task', newTask);
+            console.log("newTask", newTask)
             this.text='';
             this.day='';
             this.reminder='';
-            $emit('Add-Task', newTask);
         }, 
     }
 }
@@ -60,7 +61,7 @@ export default {
   display: block;
 }
 .form-control input {
-   width: 100%;
+    width: 97%;
   height: 40px;
   margin: 5px;
   padding: 3px 7px;

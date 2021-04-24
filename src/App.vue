@@ -31,10 +31,17 @@ export default defineComponent({
     }
   }, 
   methods:{
-    deleteTask(id){
+    async deleteTask(id){
       if(confirm('Delete this Task! Are you sure?')){
-        this.tasks = this.tasks.filter((task) =>
-          task.id !== id )
+
+        const res = await fetch(`api/tasks/${id}`, {
+          method:'DELETE'
+        })
+        
+        res.status === 200 
+        ?(this.tasks = this.tasks.filter((task) =>
+          task.id !== id))
+        : alert(`Task can't be deleted`) 
       }
     },
 
@@ -47,37 +54,36 @@ export default defineComponent({
       )
     }, 
 
-    addTask(task){
-      this.tasks = [...this.tasks, task];
+    async addTask(task){
+      const res = await fetch(`api/tasks`, {
+        method: 'POST', 
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(task)
+      })
+      const data = await res.json();
+      this.tasks = [...this.tasks, data];
     },
 
     showAddTask(){
       this.showAddTaskVar = !this.showAddTaskVar
+    }, 
+
+    async fetchTasks(){
+      const res = await fetch('api/tasks')
+      const tasks = await res.json()
+      return tasks
+    }, 
+
+    async fetchTask(id){
+      const res = await fetch(`api/tasks/${id}`)
+      const task = await res.json()
+      return task
     }
   },
-  created(){ //life cycle hook 
-    this.tasks = [
-      {
-        id:1, 
-        text:'Doctors Appointment',
-        day:'Mai 1st at 3pm '
-      },
-      {
-        id:2, 
-        text:'Work meeting',
-        day:'Mai 5st at 4pm '
-      },
-      {
-        id:3, 
-        text:'Dentist Appointment',
-        day:'Mai 11st at 1pm '
-      },
-      {
-        id:4, 
-        text:'Call Friends',
-        day:'Mai 21st at 3pm '
-      }
-    ]
+  async created(){ //life cycle hook 
+    this.tasks = await this.fetchTasks()
   }
 });
 </script>

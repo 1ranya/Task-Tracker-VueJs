@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div class="container">
     <Header :showAddTaskVar="showAddTaskVar" @show-add-task="showAddTask" title="Task Tracker"/>
     <div v-show="showAddTaskVar">
@@ -8,19 +8,21 @@
       @toggle-reminder="toggleReminder" 
       @delete-task="deleteTask" 
       :tasks="tasks"/>
+    <Footer/>
   </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import Header from './components/Header';
+import Footer from './components/Footer'
 import Tasks from './components/Tasks';
 import AddTask from './components/AddTask'
-
 export default defineComponent({
   name: "App",
   components: {
     Header, 
+    Footer,
     Tasks, 
     AddTask
   },
@@ -45,13 +47,22 @@ export default defineComponent({
       }
     },
 
-    toggleReminder(id){
-      console.log(id)
-      this.tasks = this.tasks.map((task) => 
-        task.id === id 
-        ? {...task, reminder: !task.reminder}
-        : task
-      )
+    async toggleReminder(id){
+      const taskToToggle = await this.fetchTask(id); 
+      const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder}
+
+      const res = await fetch(`api/tasks/${id}`, {
+        method:'PUT', 
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify(updTask)
+      })
+
+      const data = await res.json();
+      this.tasks = this.tasks.map((task)=>{
+        task.id === id ? {...task, reminder: data.reminder} : task
+      })
     }, 
 
     async addTask(task){
